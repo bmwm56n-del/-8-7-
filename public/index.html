@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Bot Manager</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --input-bg: #020617;
+        }
+
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+        }
+
+        .card { 
+            background: var(--card-bg); 
+            padding: 2.5rem; 
+            border-radius: 24px; 
+            width: 100%; 
+            max-width: 480px; 
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
+            border: 1px solid #334155; 
+        }
+
+        h1 { 
+            text-align: center; 
+            color: var(--primary); 
+            margin-bottom: 2rem; 
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .input-group { margin-bottom: 20px; }
+
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            color: #94a3b8; 
+            font-size: 14px; 
+            font-weight: 600;
+        }
+
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            border-radius: 12px; 
+            border: 1px solid #334155; 
+            background: var(--input-bg); 
+            color: white; 
+            box-sizing: border-box; 
+            outline: none; 
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        input:focus { 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        button { 
+            width: 100%; 
+            padding: 16px; 
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); 
+            border: none; 
+            color: white; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-size: 16px; 
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); 
+        }
+
+        #log { 
+            background: var(--input-bg); 
+            padding: 15px; 
+            height: 200px; 
+            overflow-y: auto; 
+            margin-top: 25px; 
+            font-family: 'Consolas', 'Monaco', monospace; 
+            font-size: 13px; 
+            border-radius: 12px; 
+            color: #10b981; 
+            border: 1px solid #334155; 
+            line-height: 1.6;
+        }
+
+        .status-msg { margin-bottom: 5px; border-bottom: 1px solid #1e293b; padding-bottom: 3px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🤖 بوت ماين كرافت</h1>
+        
+        <div class="input-group">
+            <label>عنوان السيرفر (IP)</label>
+            <input type="text" id="host" placeholder="مثال: play.server.com">
+        </div>
+
+        <div class="input-group">
+            <label>اسم البوت</label>
+            <input type="text" id="username" placeholder="ادخل اسم البوت">
+        </div>
+
+        <div class="input-group">
+            <label>إصدار اللعبة (اختياري)</label>
+            <input type="text" id="version" placeholder="مثلاً: 1.21.1 أو 1.21.4">
+        </div>
+
+        <button onclick="startBot()">تشغيل البوت الآن</button>
+
+        <div id="log">الحالة: بانتظار الأوامر...</div>
+    </div>
+
+    <script>
+        const socket = io();
+        const logDiv = document.getElementById('log');
+
+        function startBot() {
+            const host = document.getElementById('host').value;
+            const username = document.getElementById('username').value;
+            const version = document.getElementById('version').value;
+
+            if (!host || !username) {
+                alert("الرجاء إدخال IP السيرفر واسم البوت");
+                return;
+            }
+
+            // مسح السجل القديم عند البدء
+            logDiv.innerHTML = '<div class="status-msg">⏳ جاري إرسال الطلب للمحرك...</div>';
+            
+            socket.emit('start-bot', { host, username, version });
+        }
+
+        socket.on('status', (msg) => {
+            const time = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div class="status-msg"><span style="color: #64748b">[${time}]</span> ${msg}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        });
+    </script>
+</body>
+</html>
