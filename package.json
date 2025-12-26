@@ -1,19 +1,24 @@
 {
-  "name": "minecraftbot",
+  "name": "mc-afk-hosting",
   "version": "1.0.0",
+  "description": "Minecraft AFK Bot Hosting Support 1.21.11",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
-  "keywords": [],
+  "keywords": [
+    "minecraft",
+    "afk",
+    "bot",
+    "mineflayer"
+  ],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
-    "express": "^5.2.1",
-    "minecraft-data": "^3.102.2",
-    "mineflayer": "^4.33.0",
-    "prismarine-viewer": "^1.33.0",
-    "socket.io": "^4.8.3"
+    "express": "^4.18.2",
+    "http": "^0.0.1",
+    "mineflayer": "latest",
+    "socket.io": "^4.7.2",
+    "path": "^0.12.7"
   }
 }
